@@ -1,17 +1,40 @@
+use std::collections::HashMap;
+use std::error::Error;
 use std::fs::File;
-use std::io::BufRead;
-use std::io::BufReader;
+use std::io::{BufRead, BufReader};
 
-fn main() -> std::io::Result<()> {
-    let file = File::open("input.txt")?;
-    let reader = BufReader::new(file);
+fn main() -> Result<(), Box<dyn Error>> {
+    let f = File::open("input.txt")?;
+    let f = BufReader::new(f);
 
-    for line in reader.lines() {
+    let mut map = HashMap::new();
+
+    let mut elf: u8 = 1;
+    let mut sum: u32 = 0;
+    let mut num: u32;
+
+    for line in f.lines() {
         if line.as_ref().unwrap().is_empty() {
-            println!("BLANK LINE FOUND");
+            map.insert(elf, sum);
+            elf += 1;
+            sum = 0;
         } else {
-            println!("{}", line?);
+            num = line?.trim().parse()?;
+            sum += num;
         }
     }
+    map.insert(elf, sum);
+
+    let mut max: u32 = 0;
+    let mut win: u8 = 0;
+
+    for (key, value) in &map {
+        if value > &max {
+            max = *value;
+            win = *key;
+        }
+    }
+    println!("And the winner is... elf #{} with {} calories!", win, max);
+
     Ok(())
 }
