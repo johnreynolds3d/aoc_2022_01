@@ -4,28 +4,28 @@ use std::io::{BufRead, BufReader};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let f = File::open("input.txt")?;
-    let f = BufReader::new(f);
+    let lines = BufReader::new(f).lines();
 
-    let mut num: u32;
-    let mut sum: u32 = 0;
-    let mut vec = Vec::new();
+    let mut n: u32;
+    let mut s = 0;
+    let mut v = Vec::new();
 
-    for line in f.lines() {
+    for line in lines {
         if !line.as_ref().unwrap().is_empty() {
-            num = line?.trim().parse()?;
-            sum += num;
+            n = line?.trim().parse()?;
+            s += n;
         } else {
-            vec.push(sum);
-            sum = 0;
+            v.push(s);
+            s = 0;
         }
     }
-    vec.sort();
+    v.sort();
 
-    let l = vec.len();
-    let top3 = vec[l - 1] + vec[l - 2] + vec[l - 3];
+    let l = v.len();
+    let t = v[l - 1] + v[l - 2] + v[l - 3];
 
-    println!("Maximum calories held by a single elf: {}.", vec[l - 1]);
-    println!("Calories held by top 3 elves: {}.", top3);
+    println!("Maximum calories held by a single elf: {}", v[l - 1]);
+    println!("Calories held by top 3 elves: {}", t);
 
     Ok(())
 }
